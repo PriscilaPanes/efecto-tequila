@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Interactivo: Crisis de 1994 (MX) y Resiliencia (CL)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: "Warm Neutrality with Slate & Emerald" - A calm, professional palette using warm grays for the base, dark slate for text, and a vibrant emerald/blue combination for highlights and data visualization to create clear, trustworthy comparisons. -->
+    <!-- Application Structure Plan: A narrative-driven, four-act structure presented in a single-page dashboard. 1) Hero & Intro. 2) Mexico's Crisis (interactive cause-effect cards). 3) Chile's Resilience (tabbed policy sections). 4) Data Comparison (dynamically updated charts). 5) Lessons Learned (summary cards). A sticky nav allows non-linear exploration. This structure transforms a linear report into an engaging story, guiding the user from problem to solution to evidence, enhancing comprehension and retention. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Causes of Mexican Crisis -> Goal: Organize/Inform -> Viz: Interactive HTML/CSS Cards -> Interaction: Click to reveal details -> Justification: Breaks down complex info into digestible, user-controlled chunks.
+        - Report Info: Chile's Policies -> Goal: Organize -> Viz: Tabbed Interface -> Interaction: Click to switch between policy areas -> Justification: Manages dense information cleanly, preventing cognitive overload.
+        - Report Info: Comparative Macro Data (PIB, Inflation, etc.) -> Goal: Compare -> Viz: Grouped Bar Chart (Chart.js) -> Interaction: Buttons to update chart data -> Justification: Provides a stark, immediate visual comparison of outcomes, which is the core of the report's thesis.
+        - Report Info: Chile's Poverty Reduction -> Goal: Show Change -> Viz: Line Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Clearly illustrates a positive long-term social trend resulting from sound policy.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .nav-link.active {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .tab-btn.active {
+            border-color: #10b981;
+            background-color: #10b981;
+            color: white;
+        }
+
+        .chart-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-slate-700">Crisis 1994</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#mexico"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-200 transition-colors">Crisis
+                            en México</a>
+                        <a href="#chile"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-200 transition-colors">Resiliencia
+                            de Chile</a>
+                        <a href="#comparativa"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-200 transition-colors">Datos
+                            Comparados</a>
+                        <a href="#lecciones"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-200 transition-colors">Lecciones</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <section id="intro" class="text-center my-8 md:my-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">El "Efecto Tequila" y la Fortaleza
+                Chilena</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600">
+                Una exploración interactiva de la crisis económica de México en 1994 y el notable contraste con la
+                resiliencia de Chile. Descubra las causas, las respuestas políticas y los resultados que definieron el
+                futuro económico de dos naciones.
+            </p>
+        </section>
+        <section id="mexico" class="mb-16 md:mb-24 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center text-slate-800 mb-2">El Ojo de la Tormenta: México 1994</h3>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">La crisis mexicana, apodada "Error de
+                Diciembre", no fue un evento súbito, sino la culminación de vulnerabilidades acumuladas. Factores
+                económicos internos, inestabilidad política y presiones externas se combinaron para crear una tormenta
+                perfecta. Explore las causas fundamentales y sus devastadores efectos.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div>
+                    <h4 class="text-2xl font-semibold mb-6 text-center">Causas Fundamentales de la Crisis</h4>
+                    <div class="space-y-4">
+                        <div class="cause-card border rounded-lg p-4 cursor-pointer hover:bg-slate-100 transition-colors"
+                            data-target="info-interno">
+                            <h5 class="font-bold text-lg text-blue-700">📉 Desequilibrios Macroeconómicos</h5>
+                            <p id="info-interno" class="text-slate-600 mt-2 hidden">Déficit en cuenta corriente de casi
+                                el 8% del PIB, financiado con capital volátil. Un peso sobrevaluado que erosionó la
+                                competitividad y una drástica caída de las reservas internacionales.</p>
+                        </div>
+                        <div class="cause-card border rounded-lg p-4 cursor-pointer hover:bg-slate-100 transition-colors"
+                            data-target="info-politico">
+                            <h5 class="font-bold text-lg text-blue-700">🏛️ Inestabilidad Política</h5>
+                            <p id="info-politico" class="text-slate-600 mt-2 hidden">Asesinatos políticos de alto perfil
+                                y el levantamiento Zapatista en Chiapas generaron una profunda incertidumbre, acelerando
+                                la fuga de capitales.</p>
+                        </div>
+                        <div class="cause-card border rounded-lg p-4 cursor-pointer hover:bg-slate-100 transition-colors"
+                            data-target="info-externo">
+                            <h5 class="font-bold text-lg text-blue-700">🌍 Factores Externos</h5>
+                            <p id="info-externo" class="text-slate-600 mt-2 hidden">El aumento de las tasas de interés
+                                en EE.UU. hizo que los activos estadounidenses fueran más atractivos, desviando la
+                                inversión de mercados emergentes como México.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-2xl font-semibold mb-6 text-center">Impactos Devastadores</h4>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-4xl font-bold text-red-600">-6.9%</div>
+                            <div class="text-sm text-slate-500">Caída del PIB (1995)</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-4xl font-bold text-red-600">35%</div>
+                            <div class="text-sm text-slate-500">Inflación Anual (1995)</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-4xl font-bold text-red-600">~300%</div>
+                            <div class="text-sm text-slate-500">Devaluación del Peso</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-4xl font-bold text-red-600">7.4%</div>
+                            <div class="text-sm text-slate-500">Tasa de Desempleo (1995)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="chile" class="mb-16 md:mb-24 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center text-slate-800 mb-2">El Muro de Contención: La Resiliencia de
+                Chile</h3>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Mientras la región temblaba, Chile se mantuvo
+                firme. Su resiliencia no fue casualidad, sino el resultado de políticas prudentes y proactivas
+                implementadas años antes de la crisis. Estas medidas crearon un "muro de contención" institucional y
+                económico que aisló al país del contagio.
+            </p>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-4 flex justify-center border-b border-slate-200">
+                    <button
+                        class="tab-btn active flex-1 md:flex-none text-center px-4 py-2 -mb-px border-b-2 font-medium"
+                        data-target="tab-monetaria">Política Monetaria</button>
+                    <button class="tab-btn flex-1 md:flex-none text-center px-4 py-2 -mb-px border-b-2 font-medium"
+                        data-target="tab-fiscal">Política Fiscal</button>
+                    <button class="tab-btn flex-1 md:flex-none text-center px-4 py-2 -mb-px border-b-2 font-medium"
+                        data-target="tab-institucional">Marco Institucional</button>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-inner">
+                    <div id="tab-monetaria" class="tab-content space-y-3">
+                        <h4 class="font-bold text-emerald-700">🎯 Metas de Inflación y Tipo de Cambio Flexible</h4>
+                        <p>El Banco Central de Chile, autónomo desde 1990, priorizó la estabilidad de precios con metas
+                            de inflación explícitas. Manejó una banda cambiaria flexible que absorbió presiones
+                            externas, a diferencia de la rigidez del peso mexicano.</p>
+                        <h4 class="font-bold text-emerald-700">🚧 Encaje a Capitales de Corto Plazo</h4>
+                        <p>Una medida clave fue el "encaje": una exigencia de mantener un 30% de los capitales
+                            extranjeros de corto plazo en el Banco Central, sin recibir intereses. Esto desincentivó el
+                            flujo de capital especulativo y volátil, que fue el combustible de la crisis mexicana.</p>
+                    </div>
+                    <div id="tab-fiscal" class="tab-content space-y-3 hidden">
+                        <h4 class="font-bold text-emerald-700">💰 Disciplina y Ahorro Público</h4>
+                        <p>Chile mantuvo una estricta disciplina fiscal, generando superávits consistentes. Los ingresos
+                            extraordinarios, como los del cobre, se ahorraban en lugar de gastarse, creando "colchones"
+                            para épocas de crisis.</p>
+                        <h4 class="font-bold text-emerald-700">🔄 Política Contracíclica</h4>
+                        <p>El gasto público se basaba en ingresos permanentes, no en auges temporales. Esto permitió
+                            mantener e incluso aumentar el gasto social durante períodos de volatilidad, estabilizando
+                            la economía y protegiendo a la población.</p>
+                    </div>
+                    <div id="tab-institucional" class="tab-content space-y-3 hidden">
+                        <h4 class="font-bold text-emerald-700">🛡️ Supervisión Bancaria Prudencial</h4>
+                        <p>A diferencia de México, donde la privatización bancaria fue apresurada y poco regulada, Chile
+                            mantenía una fuerte supervisión de su sistema financiero. Esto aseguró que los bancos
+                            estuvieran bien capitalizados y no tomaran riesgos excesivos.</p>
+                        <h4 class="font-bold text-emerald-700">📈 Alto Ahorro Interno</h4>
+                        <p>Con una tasa de ahorro doméstico superior al 24% del PIB, Chile dependía menos del capital
+                            extranjero para financiar su inversión, reduciendo su exposición a las fugas de capital.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparativa" class="mb-16 md:mb-24 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center text-slate-800 mb-2">Datos Frente a Frente: Dos Realidades</h3>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Las cifras hablan por sí solas. Los datos
+                macroeconómicos de 1994 y 1995, extraídos del Banco Central de Chile y otras fuentes oficiales, revelan
+                dos trayectorias opuestas. Utilice los botones para comparar los indicadores clave y visualizar la
+                divergencia en el desempeño económico.
+            </p>
+
+            <div class="text-center mb-8">
+                <button
+                    class="chart-btn active m-1 px-4 py-2 border border-slate-300 rounded-md bg-white hover:bg-slate-100 transition-colors"
+                    data-metric="pib">Crecimiento del PIB (%)</button>
+                <button
+                    class="chart-btn m-1 px-4 py-2 border border-slate-300 rounded-md bg-white hover:bg-slate-100 transition-colors"
+                    data-metric="inflacion">Inflación Anual (%)</button>
+                <button
+                    class="chart-btn m-1 px-4 py-2 border border-slate-300 rounded-md bg-white hover:bg-slate-100 transition-colors"
+                    data-metric="desempleo">Tasa de Desempleo (%)</button>
+            </div>
+
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                <div class="chart-container">
+                    <canvas id="comparativeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <h4 class="text-2xl font-semibold text-center mb-6">El Impacto Social: Reducción de la Pobreza en Chile
+                </h4>
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
+                    <div class="chart-container">
+                        <canvas id="povertyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="lecciones" class="scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center text-slate-800 mb-2">Lecciones para Economías Emergentes</h3>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">El contraste entre México y Chile ofrece
+                lecciones duraderas sobre la importancia de la prevención, la prudencia y la construcción de
+                instituciones sólidas para navegar la volatilidad de la economía global.
+            </p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h4 class="font-bold text-lg mb-2">Autonomía del Banco Central</h4>
+                    <p class="text-slate-600">Un banco central independiente, enfocado en la estabilidad de precios, es
+                        crucial para anclar las expectativas y tomar decisiones impopulares pero necesarias.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h4 class="font-bold text-lg mb-2">Gestión de Capitales</h4>
+                    <p class="text-slate-600">La liberalización financiera total puede ser peligrosa. Regular los flujos
+                        de capital de corto plazo puede prevenir la formación de burbujas especulativas y fugas súbitas.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h4 class="font-bold text-lg mb-2">Disciplina Fiscal Contracíclica</h4>
+                    <p class="text-slate-600">Ahorrar en tiempos de bonanza crea los recursos necesarios para estimular
+                        la economía y proteger a los ciudadanos durante las recesiones, sin generar crisis de deuda.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h4 class="font-bold text-lg mb-2">Flexibilidad Cambiaria</h4>
+                    <p class="text-slate-600">Un tipo de cambio que puede ajustarse a los shocks externos actúa como un
+                        amortiguador, evitando devaluaciones traumáticas y abruptas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h4 class="font-bold text-lg mb-2">Supervisión Financiera Robusta</h4>
+                    <p class="text-slate-600">Un sistema bancario bien regulado y capitalizado es la primera línea de
+                        defensa contra el pánico financiero y el contagio.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h4 class="font-bold text-lg mb-2">Credibilidad a Largo Plazo</h4>
+                    <p class="text-slate-600">La consistencia en políticas económicas prudentes construye credibilidad,
+                        lo que resulta invaluable para mantener la confianza de los inversionistas durante las crisis.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-16">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 Análisis Interactivo Grupo 1. Creado a partir de datos del informe "La Crisis Económica de
+                México de
+                1994 y la Respuesta Resiliente de Chile".</p>
+            <p class="mt-1">Datos estadísticos de México y Chile basados en fuentes oficiales citadas en el reporte,
+                incluyendo el Banco Central de Chile y el INE.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const data = {
+                pib: {
+                    labels: ['1994', '1995'],
+                    datasets: [{
+                        label: 'México',
+                        data: [4.5, -6.9],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Chile',
+                        data: [5.7, 10.5],
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                inflacion: {
+                    labels: ['1995'],
+                    datasets: [{
+                        label: 'México',
+                        data: [35],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Chile',
+                        data: [4.32],
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                desempleo: {
+                    labels: ['1994', '1995'],
+                    datasets: [{
+                        label: 'México',
+                        data: [3.9, 7.4],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Chile',
+                        data: [5.9, 5.5],
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1
+                    }]
+                }
+            };
+
+            const povertyData = {
+                labels: ['1990', '1992', '1994', '1996'],
+                datasets: [{
+                    label: 'Pobreza (% de la población)',
+                    data: [38.6, 32.6, 27.5, 23.2],
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.1
+                }, {
+                    label: 'Indigencia (% de la población)',
+                    data: [12.9, 8.8, 7.6, 5.8],
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            };
+
+            let comparativeChart;
+            const ctxComparative = document.getElementById('comparativeChart').getContext('2d');
+
+            const chartOptions = (metric) => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: `Comparativa de ${metric.replace(/^\w/, c => c.toUpperCase())}`,
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Valor (%)'
+                        }
+                    }
+                }
+            });
+
+            function createOrUpdateChart(metric = 'pib') {
+                const chartData = data[metric];
+                const titleText = {
+                    pib: 'Crecimiento del PIB (%)',
+                    inflacion: 'Inflación Anual (%)',
+                    desempleo: 'Tasa de Desempleo (%)'
+                }[metric];
+
+                if (comparativeChart) {
+                    comparativeChart.data = chartData;
+                    comparativeChart.options.plugins.title.text = titleText;
+                    comparativeChart.update();
+                } else {
+                    comparativeChart = new Chart(ctxComparative, {
+                        type: 'bar',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'top' },
+                                title: { display: true, text: titleText, font: { size: 16 } },
+                                tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.raw}%` } }
+                            },
+                            scales: { y: { beginAtZero: false, title: { display: true, text: 'Valor (%)' } } }
+                        }
+                    });
+                }
+            }
+
+            const ctxPoverty = document.getElementById('povertyChart').getContext('2d');
+            new Chart(ctxPoverty, {
+                type: 'line',
+                data: povertyData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolución de la Pobreza e Indigencia en Chile',
+                            font: { size: 16 }
+                        },
+                        tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.raw}%` } }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Porcentaje de la Población (%)' }
+                        }
+                    }
+                }
+            });
+
+
+            const chartButtons = document.querySelectorAll('.chart-btn');
+            chartButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    chartButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    createOrUpdateChart(button.dataset.metric);
+                });
+            });
+
+            createOrUpdateChart();
+
+            const causeCards = document.querySelectorAll('.cause-card');
+            causeCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const targetId = card.dataset.target;
+                    const infoP = document.getElementById(targetId);
+                    infoP.classList.toggle('hidden');
+                });
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.id === button.dataset.target) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+
+            sections.forEach(section => {
+                if (section.id) observer.observe(section);
+            });
+
+        });
+    </script>
+</body>
+
+</html>
